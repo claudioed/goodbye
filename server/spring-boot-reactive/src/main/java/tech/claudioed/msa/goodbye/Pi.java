@@ -1,4 +1,4 @@
-package com.redhat.developers.msa.goodbye;
+package tech.claudioed.msa.goodbye;
 
 /*
 This Pi computation from 
