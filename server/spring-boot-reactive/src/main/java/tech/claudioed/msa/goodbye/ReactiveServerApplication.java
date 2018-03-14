@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @SpringBootApplication
 public class ReactiveServerApplication {
@@ -29,18 +30,17 @@ public class ReactiveServerApplication {
   }
 
   public Mono<String> nap(){
-    return Mono.create(monoSink -> {
+    return Mono.fromCallable(() -> {
       System.out.println("Received request on Thread: " + Thread.currentThread().getName());
       Pi.computePi(20000);
       System.out.println("Back from the nap with " + Thread.currentThread().getName());
-      monoSink.success("Nap from " + new Date().toString());
-    });
+      return new Date().toString();
+    }).subscribeOn(Schedulers.parallel());
   }
 
   public Mono<String> goodbye(){
     String msg = "Hello with Spring Boot 2 (Reactive) on " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(new Date());
     return Mono.just(msg);
   }
-
 
 }
